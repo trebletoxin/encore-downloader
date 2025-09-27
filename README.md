@@ -44,9 +44,9 @@ For convenience, a pre-built .exe file is added in the repository to allow this 
 
 As Linux usually includes python, simply get the requirement libraries added then run it
 
-`pip3 install -r requirements.txt` (replace yourusername with your Windows username)
+`pip3 install -r requirements.txt`
 
-`python3 ./main.py -chf /home/yourusername/clonehero/CloneHero-EncoreSongs` (CloneHero-EncoreSongs being a new folder, add it to Clone Hero once the download is complete)
+`python3 ./main.py -chf /home/yourusername/clonehero/CloneHero-EncoreSongs` (CloneHero-EncoreSongs being a new folder, add it to Clone Hero once the download is complete. Replace yourusername with your linux username)
 
 ### macOS
 
