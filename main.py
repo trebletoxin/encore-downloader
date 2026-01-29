@@ -197,8 +197,25 @@ def renameZeroWidthFolders(chFolder):
 		else:
 			os.rename(oldFolder, newFolder)
 
+def schemaRename(chFolder, theChart):
+	if platform.system != "Windows":
+		oldDir = oldOutputChartDir(chFolder, theChart, True)['dir']
+		newDir = outputChartDir(chFolder, theChart, True)['dir']
+		oldDir2 = oldOutputChartDir(chFolder, theChart, False)['dir']
+		newDir2 = outputChartDir(chFolder, theChart, False)['dir']
+	else:
+		oldDir = f"{u'\\\\?\\'}{oldOutputChartDir(chFolder, theChart, True)['dir']}"
+		newDir = f"{u'\\\\?\\'}{outputChartDir(chFolder, theChart, True)['dir']}"
+		oldDir2 = f"{u'\\\\?\\'}{oldOutputChartDir(chFolder, theChart, False)['dir']}"
+		newDir2 = f"{u'\\\\?\\'}{outputChartDir(chFolder, theChart, False)['dir']}"
+	if os.path.isdir(oldDir) and oldDir != newDir:
+		print(f'Renaming improperly named chart folder: {oldDir}')
+		os.rename(oldDir,newDir)
+	if os.path.isdir(oldDir2) and oldDir2 != newDir2:
+		print(f'Renaming improperly named chart folder: {oldDir2}')
+		os.rename(oldDir2,newDir2)
+
 def main():
-	#I removed winlongpath argument (as well as the code blocks) as it is unnecessary now
 	argParser = argparse.ArgumentParser()
 	argParser.add_argument("-t", "--threads", help="Maximum number of threads to allow", default=4, type=int)
 	argParser.add_argument("-p", "--page", help="Encore download page to start on", default=1, type=int)
@@ -213,15 +230,18 @@ def main():
 	print(f"Outputting charts to folder {args.clone_hero_folder}")
 	print(f"Using temp folder {args.temp_directory} for chart downloads")
 	print(f"Using {args.threads} threads")
+	if not args.page > 0:
+		print("Page argument must be >0!")
+		sys.exit(1)
 	if args.stop_on_error:
 		print("Will stop download/convert of charts on error")
 	if args.remove_playlist:
 		print("Removing playlist data for charts (downloaded+to-download)")
-	if not args.page > 0:
-		print("Page argument must be >0!")
-		sys.exit(1)
 	if args.remove_zerowidth:
+		print("Renaming zero-width folders")
 		renameZeroWidthFolders(args.clone_hero_folder)
+	if args.schema_cleanup:
+		print("Renaming old folders to new naming schema")
 
 	sema = asyncio.Semaphore(int(args.threads))
 	page = args.page
@@ -233,20 +253,15 @@ def main():
 			chartNum = ((page - 1) * 250) + (i + 1)
 			if chartNum % 500 == 0:
 				print(f"Progress {chartNum} of {numCharts}")
-			#Added OS detection for long path purposes
 			if args.schema_cleanup:
-				oldDir = oldOutputChartDir(args.clone_hero_folder, chart, True)['dir'] if platform.system() != 'Windows' else f"{u'\\\\?\\'}{oldOutputChartDir(args.clone_hero_folder, chart, True)['dir']}"
-				newDir = outputChartDir(args.clone_hero_folder, chart, True)['dir'] if platform.system() != 'Windows' else f"{u'\\\\?\\'}{outputChartDir(args.clone_hero_folder, chart, True)['dir']}"
-				oldDir2 = oldOutputChartDir(args.clone_hero_folder, chart, False)['dir'] if platform.system() != 'Windows' else f"{u'\\\\?\\'}{oldOutputChartDir(args.clone_hero_folder, chart, False)['dir']}"
-				newDir2 = outputChartDir(args.clone_hero_folder, chart, False)['dir'] if platform.system() != 'Windows' else f"{u'\\\\?\\'}{outputChartDir(args.clone_hero_folder, chart, False)['dir']}"
-				if os.path.isdir(oldDir) and oldDir != newDir:
-					shutil.rmtree(oldDir)
-				if os.path.isdir(oldDir2) and oldDir2 != newDir2:
-					shutil.rmtree(oldDir2)
+				schemaRename(args.clone_hero_folder, chart)
+			oldChartDir = oldOutputChartDir(args.clone_hero_folder, chart, args.remove_zerowidth)['dir'] if platform.system() != 'Windows' else f"{u'\\\\?\\'}{oldOutputChartDir(args.clone_hero_folder, chart, args.remove_zerowidth)['dir']}"
 			chartDir = outputChartDir(args.clone_hero_folder, chart, args.remove_zerowidth)['dir'] if platform.system() != 'Windows' else f"{u'\\\\?\\'}{outputChartDir(args.clone_hero_folder, chart, args.remove_zerowidth)['dir']}"
-			if os.path.isdir(chartDir):
+			if os.path.isdir(chartDir) or os.path.isdir(oldChartDir):
 				if args.remove_playlist and os.path.isfile(os.path.join(chartDir, "song.ini")):
 					asyncio.run(removePlaylist(chartDir))
+				elif args.remove_playlist and os.path.isfile(os.path.join(oldChartDir, "song.ini")):
+					asyncio.run(removePlaylist(oldChartDir))
 				continue
 
 			print(f"Spawning thread for chart download chart {chartNum} out of {numCharts}")
