@@ -108,7 +108,7 @@ def outputChartDir(chartFolder, theChart: str, rzflag) -> dict:
 
 	encoding = 'utf-8'
 	bytes_data = newFile.encode(encoding)
-	sliced_bytes = bytes_data[:MAX_FILE_LEN]
+	sliced_bytes = bytes_data[:255]
 	newFile = sliced_bytes.decode(encoding, errors='ignore')
 	newFile = newFile.rstrip()
 	outputDir = f"{chartFolder}\\{newFile}"
