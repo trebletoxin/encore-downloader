@@ -22,8 +22,8 @@ async def downloadChart(tempFolder, theChart: dict) -> str:
 
 	try:
 		os.makedirs(sngScratchDir)
-		os.makedirs(f"{sngScratchDir}\\1")
-		with open(f"{sngScratchDir}\\chart.sng",'wb') as file:
+		os.makedirs(os.path.join(sngScratchDir, "1"))
+		with open(os.path.join(sngScratchDir, "chart.sng"),'wb') as file:
 			file.write(theSng)
 		
 	except Exception as e:
