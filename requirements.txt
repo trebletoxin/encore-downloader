@@ -1,4 +1,4 @@
-configargparse
 requests
 aiohttp
+numpy
 

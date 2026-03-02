@@ -1,0 +1,5 @@
+This is working well on Windows, but I ran into issues on Linux using gooey. There may be something I'm missing, but also, I feel if the user is running Linux, they probably don't find it too much trouble to run the command line version. 
+
+Issues - 
+
+Entries on the GUI get flagged as being required, even if the field is populated.
