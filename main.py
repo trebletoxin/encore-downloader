@@ -458,7 +458,6 @@ def main():
 	argParser.add_argument("-t", "--threads", help="Maximum number of threads to allow", default=4, type=int)
 	argParser.add_argument("-s", "--search", help="Search to filter Encore results", default="", type=str)
 	argParser.add_argument("-p", "--page", help="Encore download page to start on", default=1, type=int)
-	argParser.add_argument("-td", "--temp-directory", help="Temporary directory to use for chart downloads before conversion", default=f"{script_path('scratch')}", type=str)
 	argParser.add_argument("-soe", "--stop-on-error", help="Continue on error during conversion or download", action="store_true")
 	argParser.add_argument("-chf", "--clone-hero-folder", help="Clone Hero songs folder to output charts to", required=True)
 	argParser.add_argument("-rp", "--remove-playlist", help="Remove playlist data for downloaded charts", action="store_true")
@@ -513,7 +512,10 @@ def main():
 						if args.remove_playlist and os.path.isfile(os.path.join(chartDir, "song.ini")):
 							tasks.append(asyncio.create_task(removePlaylist(chartDir)))
 						elif args.remove_playlist and os.path.isfile(os.path.join(oldChartDir, "song.ini")):
-							tasks.append(asyncio.create_task(removePlaylist(oldChartDir)))
+							if args.schema_cleanup:
+								tasks.append(asyncio.create_task(removePlaylist(chartDir)))
+							else:
+								tasks.append(asyncio.create_task(removePlaylist(oldChartDir)))
 						continue
 
 					tasks.append(asyncio.create_task(doChartDownload(chart, args, sema, session, chartNum, numCharts)))
@@ -527,9 +529,6 @@ def main():
 
 	asyncio.run(async_main())
 
-	scratch_leftovers = os.listdir(args.temp_directory)
-	for item in scratch_leftovers:
-		shutil.rmtree(os.path.join(args.temp_directory,item))
 	print("Script completed! All charts charts have been downloaded", flush=True)
 	sys.exit(0)
 

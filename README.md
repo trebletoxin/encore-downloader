@@ -31,9 +31,6 @@ Download the executable from the [releases](https://github.com/trebletoxin/encor
                         Clone Hero songs folder to output charts to. This option is required
   -t THREADS, --threads THREADS
                         Maximum number of threads to allow - defaults to 4 and is recommended
-  -td TEMP_DIRECTORY, --temp-directory TEMP_DIRECTORY
-                        Temporary directory to use for chart downloads before
-                        conversion. Defaults to the 'scratch' folder included in the zip.
   -soe, --stop-on-error
                         Continue on error during conversion or download. 
                         Only used for debugging
