@@ -407,7 +407,6 @@ def oldOutputChartDir(chartFolder, theChart: str) -> dict:
 
 async def doChartDownload(theChart, args, sema, session, chartNum, numCharts):
 	async with sema:
-		print(f"Progress {chartNum} of {numCharts}")
 		print(f"Starting download/conversion of chart {theChart['name']} - {theChart['album']} - {theChart['artist']} - {theChart['charter']} - {theChart['md5']}", flush=True)
 		finalChartFolder = await downloadChart(session, theChart, args.clone_hero_folder)
 		if not finalChartFolder:
@@ -466,7 +465,7 @@ def script_path(relative_path):
 		'show_time_remaining':True,
 		'hide_time_remaining_on_complete':True
 	},
-	hide_progress_msg=True
+	hide_progress_msg=False
 )
 def main():
 	argParser = GooeyParser(description="Download every chart from Chorus Encore. Saves chart folders using Bridge\'s default naming format")
@@ -522,7 +521,7 @@ def main():
 				for i, chart in enumerate(pageData):
 					chartNum = ((page - 1) * 250) + (i + 1)
 					if chartNum % 500 == 0:
-						print(f"Status Update: {chartNum} of {numCharts}", flush=True)
+						print(f"Progress {chartNum} of {numCharts}", flush=True)
 					if args.schema_cleanup:
 						tasks.append(asyncio.create_task(schemaRename(args.clone_hero_folder, chart)))
 					oldChartDir = oldOutputChartDir(args.clone_hero_folder, chart)['dir'] if platform.system() != 'Windows' else f"{u'\\\\?\\'}{oldOutputChartDir(args.clone_hero_folder, chart)['dir']}"
