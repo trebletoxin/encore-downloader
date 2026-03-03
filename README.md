@@ -20,7 +20,7 @@ A simple user interface — select your chart directory and start. That is all t
 
 Again, it is recommended that you create a new folder to download charts to and add it to clone hero after downloading everything.
 
-![GUI Photo](https://github.com/trebletoxin/encore-downloader/tree/main/src/img/GUI-Photo.png))
+![GUI Photo](https://raw.githubusercontent.com/trebletoxin/encore-downloader/refs/heads/main/src/img/GUI-Photo.png)
 
 ### Usage
 
