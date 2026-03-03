@@ -477,7 +477,6 @@ def main():
 		sys.exit(1)
 
 	print(f"Outputting charts to folder {args.clone_hero_folder}", flush=True)
-	print(f"Using temp folder {args.temp_directory} for chart downloads", flush=True)
 	print(f"Using {args.threads} threads", flush=True)
 	if not args.page > 0:
 		print("Page argument must be >0!", flush=True)
