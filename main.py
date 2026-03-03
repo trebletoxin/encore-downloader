@@ -333,7 +333,10 @@ async def downloadChart(session: aiohttp.ClientSession, theChart: dict, chartFol
 		finalChartPath = outputFolder["dir"]
 	if not os.path.isdir(finalChartPath):
 		os.makedirs(finalChartPath)
+		video_extensions = (".mp4",".avi",".webm",".vp8",".ogv",".mpeg")
 		for file in final_chart_files:
+			if file[0].endswith(video_extensions):
+				continue
 			with open(os.path.join(finalChartPath,file[0]),'wb') as f:
 				f.write(file[1])		
 	else:
