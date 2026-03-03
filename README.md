@@ -22,7 +22,7 @@ Again, it is recommended that you create a new folder to download charts to and 
 
 ### Usage
 
-Download the latest version from the [releases](https://github.com/trebletoxin/encore-downloader/releases).
+Download the executable from the [releases](https://github.com/trebletoxin/encore-downloader/releases).
 
 ## Command Line Options for all OS's
 
